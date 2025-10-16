@@ -1,4 +1,6 @@
-# Monitoring-soil-moisture-value-in-Thing-speak-cloud
+# NAME : DHARMALINGAM S
+# REG NO: 212223040037
+# Ex-4 Monitoring soil moisture value in Thing speak cloud
 # Uploading soil moisture sensor data in Thing Speak cloud
 
 # AIM:
@@ -84,8 +86,74 @@ Prototype and build IoT systems without setting up servers or developing web sof
 ![image](https://github.com/user-attachments/assets/5beaf86c-0d5d-4b99-9c22-bb0351f487ab)
 
 # PROGRAM:
+```
+#include "ThingSpeak.h"
+#include <WiFi.h>
+
+char ssid[] = "poco";         
+char pass[] = "12345678";
+
+WiFiClient client;
+unsigned long myChannelNumber = 3119188;  
+const int MoistureField = 1;               
+const char *myWriteAPIKey = "OZZVUINHRCJU89SO";
+
+#define soilPin 34   
+#define ledPin 2     
+
+int soilValue = 0;
+int dryValue = 4095;   
+int wetValue = 0;      
+int moisturePercent = 0;
+
+void setup() {
+  Serial.begin(115200);
+  pinMode(soilPin, INPUT);
+  pinMode(ledPin, OUTPUT);
+
+  WiFi.begin(ssid, pass);    
+  ThingSpeak.begin(client);
+}
+
+void loop() {
+  while (WiFi.status() != WL_CONNECTED) {
+    Serial.println("Connecting to WiFi...");
+    WiFi.begin(ssid, pass);
+    delay(5000);
+  }
+
+  soilValue = analogRead(soilPin);
+
+  moisturePercent = map(soilValue, dryValue, wetValue, 0, 100);
+  moisturePercent = constrain(moisturePercent, 0, 100);
+
+  Serial.print("Soil Moisture = ");
+  Serial.print(moisturePercent);
+  Serial.println("%");
+
+  // LED ON when soil is dry (below 40%)
+  if (moisturePercent < 40) {
+    digitalWrite(ledPin, HIGH);
+  } else {
+    digitalWrite(ledPin, LOW);
+  }
+
+  // Send data to ThingSpeak
+  ThingSpeak.setField(MoistureField, moisturePercent);
+  int status = ThingSpeak.writeFields(myChannelNumber, myWriteAPIKey);
+
+
+
+  delay(4000); // ThingSpeak minimum delay: 4 seconds
+}
+```
 # CIRCUIT DIAGRAM:
+![WhatsApp Image 2025-10-16 at 09 10 22_0cc5e2bf](https://github.com/user-attachments/assets/8da75626-6b1a-478a-b5b2-73eb4087b947)
+
 # OUTPUT:
+<img width="1919" height="947" alt="image" src="https://github.com/user-attachments/assets/4dd39bfc-4089-4925-824e-170ebb718b53" />
+<img width="1768" height="861" alt="image" src="https://github.com/user-attachments/assets/5cf4e96a-629e-4eb5-9be4-644f8e078afb" />
+
 # RESULT:
 Thus the soil moisture values are updated in the Thing speak cloud using ESP32 controller.
 
