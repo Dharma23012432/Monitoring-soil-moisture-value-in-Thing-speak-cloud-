@@ -1,6 +1,6 @@
 # NAME : DHARMALINGAM S
 # REG NO: 212223040037
-# Ex-4 Monitoring soil moisture value in Thing speak cloud
+# Ex-5 Monitoring soil moisture value in Thing speak cloud
 # Uploading soil moisture sensor data in Thing Speak cloud
 
 # AIM:
